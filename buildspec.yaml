@@ -1,0 +1,19 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ca-central-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.ca-central-1.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - docker build -t patel-flask-app .
+      - docker tag patel-flask-app:latest <account-id>.dkr.ecr.ca-central-1.amazonaws.com/patel-ecr:latest
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push <account-id>.dkr.ecr.ca-central-1.amazonaws.com/patel-ecr:latest
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - '**/*'
