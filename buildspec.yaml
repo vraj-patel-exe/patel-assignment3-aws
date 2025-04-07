@@ -15,7 +15,7 @@ phases:
       - docker push 277707106820.dkr.ecr.ca-central-1.amazonaws.com/patel-ecr:latest
       - echo Generating imagedefinitions.json...
       - printf '[{"name":"patel-container","imageUri":"277707106820.dkr.ecr.ca-central-1.amazonaws.com/patel-ecr:latest"}]' > imagedefinitions.json
-      - echo Build completed on `date`
+      - echo Build completed on `date` # Updated for new commit
 artifacts:
   files:
     - imagedefinitions.json
