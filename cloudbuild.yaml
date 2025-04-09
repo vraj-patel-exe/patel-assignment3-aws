@@ -1,0 +1,38 @@
+steps:
+  # Install Phase
+  - name: 'gcr.io/cloud-builders/docker'
+    id: install
+    entrypoint: 'bash'
+    args: ['-c', 'echo "Installing dependencies..."']
+
+  # Pre-Build Phase: Authenticate to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: pre-build
+    args: ['auth', 'configure-docker', 'northamerica-northeast1-docker.pkg.dev']
+
+  # Build Phase: Build Docker Image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: build
+    args: ['build', '-t', 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/patel-ecr/patel-flask-app:latest', '.']
+
+  # Post-Build Phase: Push Image and Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/docker'
+    id: push
+    args: ['push', 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/patel-ecr/patel-flask-app:latest']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: deploy
+    args:
+      - 'run'
+      - 'deploy'
+      - 'patel-cloud-run'
+      - '--image=northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/patel-ecr/patel-flask-app:latest'
+      - '--region=northamerica-northeast1'
+      - '--platform=managed'
+      - '--min-instances=1'
+      - '--max-instances=4'
+      - '--vpc-connector=patel-vpc-connector'
+      - '--ingress=internal-and-cloud-load-balancing'
+      - '--port=5000'
+options:
+  env:
+    - 'PROJECT_ID=$PROJECT_ID'
