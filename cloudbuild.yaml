@@ -19,6 +19,7 @@ steps:
     args: ['push', 'northamerica-northeast1-docker.pkg.dev/$PROJECT_ID/patel-ecr/patel-flask-app:latest']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: deploy
+    entrypoint: 'gcloud'
     args:
       - 'run'
       - 'deploy'
@@ -31,6 +32,7 @@ steps:
       - '--vpc-connector=patel-vpc-connector'
       - '--ingress=internal-and-cloud-load-balancing'
       - '--port=5000'
+      - '--allow-unauthenticated'
 options:
   env:
     - 'PROJECT_ID=$PROJECT_ID'
