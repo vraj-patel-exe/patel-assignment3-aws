@@ -36,3 +36,4 @@ steps:
 options:
   env:
     - 'PROJECT_ID=$PROJECT_ID'
+  default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET
